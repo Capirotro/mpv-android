@@ -1,10 +1,12 @@
 package `is`.xyz.mpv
 
 import `is`.xyz.filepicker.DocumentPickerFragment
-import `is`.xyz.mpv.preferences.PreferenceActivity
 import `is`.xyz.mpv.databinding.FragmentMainScreenBinding
+import `is`.xyz.mpv.preferences.PreferenceActivity
 import android.app.Activity
 import android.content.ActivityNotFoundException
+import android.content.ClipData
+import android.content.ClipboardManager
 import android.content.Intent
 import android.content.res.Configuration
 import android.net.Uri
@@ -12,11 +14,14 @@ import android.os.Bundle
 import android.preference.PreferenceManager
 import android.util.Log
 import android.view.View
+import android.widget.EditText
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AlertDialog
+import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 
 class MainScreenFragment : Fragment(R.layout.fragment_main_screen) {
     private lateinit var binding: FragmentMainScreenBinding
@@ -103,12 +108,88 @@ class MainScreenFragment : Fragment(R.layout.fragment_main_screen) {
             saveChoice("") // will reset
             startActivity(Intent(context, PreferenceActivity::class.java))
         }
+        binding.aniCliBtn.setOnClickListener {
+            saveChoice("anicli")
+            showAniCliDialog()
+        }
 
         if (BuildConfig.DEBUG) {
             binding.settingsBtn.setOnLongClickListener { showDebugMenu(); true }
         }
 
         onConfigurationChanged(view.resources.configuration)
+    }
+
+    private fun showAniCliDialog() {
+        val contentView = layoutInflater.inflate(R.layout.dialog_ani_cli_search, null)
+        val queryEditText = contentView.findViewById<EditText>(R.id.queryEditText)
+        val episodeEditText = contentView.findViewById<EditText>(R.id.episodeEditText)
+
+        MaterialAlertDialogBuilder(requireContext())
+            .setTitle(R.string.ani_cli_dialog_title)
+            .setMessage(R.string.ani_cli_dialog_subtitle)
+            .setView(contentView)
+            .setPositiveButton(R.string.ani_cli_action_run) { _, _ ->
+                val query = queryEditText.text?.toString()?.trim().orEmpty()
+                if (query.isBlank()) {
+                    showAniCliError(getString(R.string.ani_cli_error_empty_query))
+                    return@setPositiveButton
+                }
+                runAniCli(query, episodeEditText.text?.toString()?.trim().orEmpty())
+            }
+            .setNeutralButton(R.string.ani_cli_action_help) { _, _ ->
+                showAniCliHelp()
+            }
+            .setNegativeButton(R.string.dialog_cancel) { dialog, _ -> dialog.cancel() }
+            .show()
+    }
+
+    private fun runAniCli(query: String, episode: String) {
+        val command = buildString {
+            append("ani-cli --default-player mpv ")
+            if (episode.isNotBlank()) {
+                append("-e ")
+                append(quoteForShell(episode))
+                append(' ')
+            }
+            append(quoteForShell(query))
+        }
+
+        val termuxIntent = Intent("com.termux.RUN_COMMAND").apply {
+            setPackage("com.termux")
+            putExtra("com.termux.RUN_COMMAND_PATH", "/data/data/com.termux/files/usr/bin/bash")
+            putExtra("com.termux.RUN_COMMAND_ARGUMENTS", arrayOf("-lc", command))
+            putExtra("com.termux.RUN_COMMAND_WORKDIR", "/data/data/com.termux/files/home")
+            putExtra("com.termux.RUN_COMMAND_BACKGROUND", false)
+        }
+
+        try {
+            startActivity(termuxIntent)
+        } catch (_: ActivityNotFoundException) {
+            val clipboard = ContextCompat.getSystemService(requireContext(), ClipboardManager::class.java)
+            clipboard?.setPrimaryClip(ClipData.newPlainText("ani-cli", command))
+            showAniCliError(getString(R.string.ani_cli_error_missing_termux, command))
+        }
+    }
+
+    private fun quoteForShell(raw: String): String {
+        return "'${raw.replace("'", "'\\''")}'"
+    }
+
+    private fun showAniCliHelp() {
+        MaterialAlertDialogBuilder(requireContext())
+            .setTitle(R.string.ani_cli_help_title)
+            .setMessage(R.string.ani_cli_help_message)
+            .setPositiveButton(R.string.dialog_ok, null)
+            .show()
+    }
+
+    private fun showAniCliError(message: String) {
+        MaterialAlertDialogBuilder(requireContext())
+            .setTitle(R.string.ani_cli_error_title)
+            .setMessage(message)
+            .setPositiveButton(R.string.dialog_ok, null)
+            .show()
     }
 
     private fun showDebugMenu() {
@@ -189,6 +270,7 @@ class MainScreenFragment : Fragment(R.layout.fragment_main_screen) {
             }
             "url" -> binding.urlBtn.callOnClick()
             "file" -> binding.filepickerBtn.callOnClick()
+            "anicli" -> binding.aniCliBtn.callOnClick()
         }
     }
 
