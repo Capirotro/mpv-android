@@ -37,3 +37,13 @@ You can download mpv-android from the [Releases section](https://github.com/mpv-
 Take a look at the [README](buildscripts/README.md) inside the `buildscripts` directory.
 
 Some other documentation can be found at this [link](http://mpv-android.github.io/mpv-android/).
+
+## Android Studio / Gradle build check
+
+If you want to verify the app module builds, run:
+
+```bash
+./gradlew :app:assembleDefaultDebug
+```
+
+If the command fails with an SDK location error, create `local.properties` in the repository root and set `sdk.dir=/path/to/Android/Sdk` (or export `ANDROID_HOME`).
