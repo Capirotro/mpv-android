@@ -3,9 +3,9 @@
      them to be changed based on the locale and options. -->
 <resources xmlns:tools="http://schemas.android.com/tools" tools:ignore="MissingTranslation">
     <!-- Simple strings. -->
-    <string name="mpv_activity">mpv</string>
+    <string name="mpv_activity">AniXMPV</string>
     <string name="label_share_intent">Play in mpv</string>
-    <string name="title_activity_settings">Settings</string>
+    <string name="title_activity_settings">AniXMPV Settings</string>
     <string name="dialog_ok">OK</string>
     <string name="dialog_cancel">Cancel</string>
     <string name="dialog_save">Save</string>
@@ -93,7 +93,7 @@
     <string name="pref_header_advanced">Advanced</string>
     <string name="pref_header_advanced_summary"></string>
 
-    <string name="pref_header_about_mpv">About mpv</string>
+    <string name="pref_header_about_mpv">About AniXMPV</string>
     <string name="pref_header_about_mpv_summary"></string>
 
     <string name="pref_default_file_manager_path_title">Default file manager path</string>
@@ -208,4 +208,20 @@
     <!-- File picker -->
     <string name="nnf_name">Name</string>
     <string name="nnf_permission_external_write_denied">Permission to access file system denied</string>
+
+    <string name="action_ani_cli_search">Ani-cli Search</string>
+    <string name="ani_cli_dialog_title">Search anime (ani-cli)</string>
+    <string name="ani_cli_dialog_subtitle">Search and run ani-cli in Termux using mpv as player.</string>
+    <string name="ani_cli_query_hint">Anime title</string>
+    <string name="ani_cli_episode_hint">Episode (optional)</string>
+    <string name="ani_cli_episode_helper">Supports values like 1, 12, or 1-3.</string>
+    <string name="ani_cli_action_run">Run</string>
+    <string name="ani_cli_action_help">Setup</string>
+    <string name="ani_cli_help_title">Ani-cli setup</string>
+    <string name="ani_cli_help_message">Install Termux and ani-cli, then enable external commands in Termux by setting allow-external-apps=true in ~/.termux/termux.properties.</string>
+    <string name="ani_cli_error_title">Ani-cli integration</string>
+    <string name="ani_cli_error_empty_query">Please enter an anime title first.</string>
+    <string name="ani_cli_error_missing_termux">Termux was not found. The generated command has been copied:
+%1$s</string>
+
 </resources>
