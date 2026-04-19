@@ -29,6 +29,7 @@ class NotificationButtonReceiver : BroadcastReceiver() {
         }
 
         private const val TAG = "mpv"
-        private const val PREFIX = "is.xyz.mpv"
+        private val PREFIX: String
+            get() = BuildConfig.APPLICATION_ID
     }
 }

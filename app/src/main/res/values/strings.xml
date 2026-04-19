@@ -3,9 +3,9 @@
      them to be changed based on the locale and options. -->
 <resources xmlns:tools="http://schemas.android.com/tools" tools:ignore="MissingTranslation">
     <!-- Simple strings. -->
-    <string name="mpv_activity">mpv</string>
+    <string name="mpv_activity">AniXMPV</string>
     <string name="label_share_intent">Play in mpv</string>
-    <string name="title_activity_settings">Settings</string>
+    <string name="title_activity_settings">AniXMPV Settings</string>
     <string name="dialog_ok">OK</string>
     <string name="dialog_cancel">Cancel</string>
     <string name="dialog_save">Save</string>
@@ -93,7 +93,7 @@
     <string name="pref_header_advanced">Advanced</string>
     <string name="pref_header_advanced_summary"></string>
 
-    <string name="pref_header_about_mpv">About mpv</string>
+    <string name="pref_header_about_mpv">About AniXMPV</string>
     <string name="pref_header_about_mpv_summary"></string>
 
     <string name="pref_default_file_manager_path_title">Default file manager path</string>
